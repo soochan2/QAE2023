@@ -1,0 +1,934 @@
+---
+title: "Themed dashboard"
+output: 
+  flexdashboard::flex_dashboard:
+    theme:
+      bg: "#101010"
+      fg: "#FDF7F7" 
+      primary: "#ED79F9"
+      base_font:
+        google: Prompt
+      code_font:
+        google: JetBrains Mono
+    orientation: columns
+    vertical_layout: fill
+---
+
+```{r setup, include=FALSE}
+#Install thematic and un-comment for themed static plots (i.e., ggplot2)
+#thematic::thematic_rmd()
+library(flexdashboard)
+library(jsonlite)
+library(dplyr)
+library(coronavirus)
+library(dplyr)
+library(readr)
+library(stringr)
+library(knitr)
+library(kableExtra)
+library(stringr)
+library(httr)
+library(XML)
+library(ggplot2)
+library(ggthemes)
+library(scales)
+
+
+# Install thematic and un-comment for themed static plots (i.e., ggplot2)
+# thematic::thematic_rmd()
+```
+
+# 국내내 비트코인 트랜드24(업비트트)
+
+## Column {.tabset data-width="500"}
+
+### 검색어: 비트코인
+
+```{r}
+# 1. XML로 받기
+searchUrl <- "https://openapi.naver.com/v1/search/news.xml"
+client_id <- "ZbRRo2N0JNo25YD8n57m"
+client_secret <- "nQE2bpCNCa"
+
+search.word <- "비트코인" %>% enc2utf8()
+query <- URLencode(search.word)
+url <- str_c(searchUrl, "?query=", query, "&display=10")
+
+res <- GET(url,
+           add_headers("X-Naver-Client-Id"=client_id,
+                       "X-Naver-Client-Secret"=client_secret))
+doc <- toString(res)
+# 뉴스 Dataframe 생성
+xmlFile <- xmlParse(doc)
+#xmlRoot(xmlFile)
+selected.nodes <- getNodeSet(xmlFile, "//item")
+
+df <- xmlToDataFrame(selected.nodes)
+
+#########################
+description <- df[,4]
+
+description2 <- description %>%
+    str_remove_all("<b>|</b>|&quot;")
+
+title <- df[,1] %>%
+    str_remove_all("<b>|</b>|&quot;")
+
+link <- df[,2]
+
+
+# 가공된 데이터 적용
+description <- df[, 4]
+description2 <- description %>% str_remove_all("<b>|</b>|&quot;")
+title <- df[, 1] %>% str_remove_all("<b>|</b>|&quot;")
+link <- df[, 2]
+
+# 데이터프레임 생성
+df_combined <- data.frame(Description = description2,
+                          Title = sprintf('<a href="%s">%s</a>', link, title),
+                          stringsAsFactors = FALSE)
+
+# 테이블 출력
+df_combined <- df_combined %>%
+    kable(format="html", escape=FALSE) %>%
+    kable_styling(bootstrap_options = c("striped", "hover", "condensed")) %>%
+    column_spec(1, width = "35em")
+
+df_combined
+
+
+```
+
+### 검색어: 코인 상승
+
+```{r}
+# 1. XML로 받기
+search.word <- "코인 상승" %>% enc2utf8()
+query <- URLencode(search.word)
+url <- str_c(searchUrl, "?query=", query, "&display=10")
+
+res <- GET(url,
+           add_headers("X-Naver-Client-Id"=client_id,
+                       "X-Naver-Client-Secret"=client_secret))
+doc <- toString(res)
+# 뉴스 Dataframe 생성
+xmlFile <- xmlParse(doc)
+#xmlRoot(xmlFile)
+selected.nodes <- getNodeSet(xmlFile, "//item")
+
+df <- xmlToDataFrame(selected.nodes)
+
+#########################
+description <- df[,4]
+
+description2 <- description %>%
+    str_remove_all("<b>|</b>|&quot;")
+
+title <- df[,1] %>%
+    str_remove_all("<b>|</b>|&quot;")
+
+link <- df[,2]
+
+
+# 가공된 데이터 적용
+description <- df[, 4]
+description2 <- description %>% str_remove_all("<b>|</b>|&quot;")
+title <- df[, 1] %>% str_remove_all("<b>|</b>|&quot;")
+link <- df[, 2]
+
+# 데이터프레임 생성
+df_combined <- data.frame(Description = description2,
+                          Title = sprintf('<a href="%s">%s</a>', link, title),
+                          stringsAsFactors = FALSE)
+
+# 테이블 출력
+df_combined <- df_combined %>%
+    kable(format="html", escape=FALSE) %>%
+    kable_styling(bootstrap_options = c("striped", "hover", "condensed")) %>%
+    column_spec(1, width = "35em")
+
+df_combined
+
+```
+
+### 검색어: 코인 하락
+
+```{r}
+# 1. XML로 받기
+search.word <- "코인 하락" %>% enc2utf8()
+query <- URLencode(search.word)
+url <- str_c(searchUrl, "?query=", query, "&display=10")
+
+res <- GET(url,
+           add_headers("X-Naver-Client-Id"=client_id,
+                       "X-Naver-Client-Secret"=client_secret))
+doc <- toString(res)
+# 뉴스 Dataframe 생성
+xmlFile <- xmlParse(doc)
+#xmlRoot(xmlFile)
+selected.nodes <- getNodeSet(xmlFile, "//item")
+
+df <- xmlToDataFrame(selected.nodes)
+
+#########################
+description <- df[,4]
+
+description2 <- description %>%
+    str_remove_all("<b>|</b>|&quot;")
+
+title <- df[,1] %>%
+    str_remove_all("<b>|</b>|&quot;")
+
+link <- df[,2]
+
+
+# 가공된 데이터 적용
+description <- df[, 4]
+description2 <- description %>% str_remove_all("<b>|</b>|&quot;")
+title <- df[, 1] %>% str_remove_all("<b>|</b>|&quot;")
+link <- df[, 2]
+
+# 데이터프레임 생성
+df_combined <- data.frame(Description = description2,
+                          Title = sprintf('<a href="%s">%s</a>', link, title),
+                          stringsAsFactors = FALSE)
+
+# 테이블 출력
+df_combined <- df_combined %>%
+    kable(format="html", escape=FALSE) %>%
+    kable_styling(bootstrap_options = c("striped", "hover", "condensed")) %>%
+    column_spec(1, width = "35em")
+
+df_combined
+
+```
+
+## Column {data-width="350"}
+
+### 비트코인 업비트
+
+```{r}
+res1 <- GET(url = 'https://api.upbit.com/v1/market/all')
+coinlist <- res1 %>% content(as = 'text') %>% fromJSON()
+coinname <- '비트코인'
+
+# 관심있는 코인의 코드 확인
+coin_code <- coinlist[coinlist$korean_name == coinname, 'market']
+
+# 현재 가격 조회
+res2 <- GET(url = 'https://api.upbit.com/v1/ticker',
+            query = list(markets = "KRW-BTC"))
+
+# 데이터 추출
+coinPrice <- res2 %>% content(as = 'text') %>% fromJSON()
+prev_closing_price <- coinPrice$prev_closing_price
+trade_price <- coinPrice$trade_price
+signed_change_price <- coinPrice$signed_change_price
+signed_change_rate <- coinPrice$signed_change_rate
+
+# 현재 시세 출력
+
+cat("전일 종가: ", format(prev_closing_price, big.mark = ",", scientific = FALSE), "\n")
+cat("현재 시세: ", format(trade_price, big.mark = ",", scientific = FALSE), "\n")
+
+# 변동액에 따른 화살표와 색상 설정
+if (signed_change_price > 0) {
+  arrow <- "▲"
+  color <- "blue"
+} else if (signed_change_price < 0) {
+  arrow <- "▼"
+  color <- "red"
+} else {
+  arrow <- ""
+  color <- "black"
+}
+
+# 전일 종가의 변동액 출력
+cat("전일 종가의 변동액: ", arrow, format(abs(signed_change_price), big.mark = ",", scientific = FALSE), "\n")
+
+# 전일 종가의 변동율 출력
+cat("전일 종가의 변동율: ", arrow, format(signed_change_rate*100, big.mark = ",", scientific = FALSE), "\n")
+
+
+
+```
+
+### 비트코인 시간대별 트랜드드
+
+```{r, fig.width=13, fig.height=6}
+
+# 분단위 추출
+res3 <- GET(url = 'https://api.upbit.com/v1/candles/minutes/1', query = list(market = 'KRW-BTC', count = 200))
+df <- res3 %>% content(as = 'text') %>% fromJSON()
+
+# 시분 추출
+df$trade_time <- str_extract(string = df$candle_date_time_kst, pattern = '\\d{2}:\\d{2}')
+
+
+# 그래프 출력
+a <- ggplot(data = df, mapping = aes(x = trade_time, y = trade_price, group = TRUE)) +
+      geom_line(color = "blue") +
+      theme(axis.text.x = element_text(angle = 95, hjust = 5)) +
+      scale_x_discrete(labels = function(x) ifelse(seq_along(x) %% 5 == 0, x, ""))
+a+ theme_economist()
+
+```
+
+### 비트코인 월별 트랜드드
+
+```{r, fig.width=13, fig.height=6}
+####################################################
+#월단위 추출
+res4 <- GET(url = 'https://api.upbit.com/v1/candles/months',
+            query = list(market = 'KRW-BTC',
+            count = 12))
+res4 %>% content(as = 'text') %>% fromJSON() -> df
+
+
+str_extract(string = df$candle_date_time_kst,
+            pattern = '(?<=-)\\d{2}-\\d{2}') -> df$trade_days
+
+
+# Sort the data by trade_days in ascending order
+df <- df[order(df$first_day_of_period ), ]
+
+G <- ggplot(data = df, aes(x = first_day_of_period , y = trade_price, group = TRUE)) +
+    geom_line() +
+    geom_text(aes(label = trade_price), vjust = -1) +
+    theme_bw() +
+    theme(axis.text.x = element_text(angle = 95, hjust = 5))
+####################################################
+G + theme_economist()
+
+
+```
+
+# 국외 비트코인 트랜드24(바이낸스)
+
+## Column {.tabset data-width="500"}
+
+### 검색어: Global Bitcoin adoption
+
+```{r}
+# 1. XML로 받기
+searchUrl <- "https://openapi.naver.com/v1/search/news.xml"
+client_id <- "ZbRRo2N0JNo25YD8n57m"
+client_secret <- "nQE2bpCNCa"
+
+search.word <- "Global Bitcoin adoption" %>% enc2utf8()
+query <- URLencode(search.word)
+url <- str_c(searchUrl, "?query=", query, "&display=10")
+
+res <- GET(url,
+           add_headers("X-Naver-Client-Id"=client_id,
+                       "X-Naver-Client-Secret"=client_secret))
+doc <- toString(res)
+# 뉴스 Dataframe 생성
+xmlFile <- xmlParse(doc)
+#xmlRoot(xmlFile)
+selected.nodes <- getNodeSet(xmlFile, "//item")
+
+df <- xmlToDataFrame(selected.nodes)
+
+#########################
+description <- df[,4]
+
+description2 <- description %>%
+    str_remove_all("<b>|</b>|&quot;")
+
+title <- df[,1] %>%
+    str_remove_all("<b>|</b>|&quot;")
+
+link <- df[,2]
+
+
+# 가공된 데이터 적용
+description <- df[, 4]
+description2 <- description %>% str_remove_all("<b>|</b>|&quot;")
+title <- df[, 1] %>% str_remove_all("<b>|</b>|&quot;")
+link <- df[, 2]
+
+# 데이터프레임 생성
+df_combined <- data.frame(Description = description2,
+                          Title = sprintf('<a href="%s">%s</a>', link, title),
+                          stringsAsFactors = FALSE)
+
+# 테이블 출력
+df_combined <- df_combined %>%
+    kable(format="html", escape=FALSE) %>%
+    kable_styling(bootstrap_options = c("striped", "hover", "condensed")) %>%
+    column_spec(1, width = "35em")
+
+df_combined
+
+
+```
+
+### 검색어: Bitcoin investment trends
+
+```{r}
+# 1. XML로 받기
+search.word <- "Bitcoin investment trends" %>% enc2utf8()
+query <- URLencode(search.word)
+url <- str_c(searchUrl, "?query=", query, "&display=10")
+
+res <- GET(url,
+           add_headers("X-Naver-Client-Id"=client_id,
+                       "X-Naver-Client-Secret"=client_secret))
+doc <- toString(res)
+# 뉴스 Dataframe 생성
+xmlFile <- xmlParse(doc)
+#xmlRoot(xmlFile)
+selected.nodes <- getNodeSet(xmlFile, "//item")
+
+df <- xmlToDataFrame(selected.nodes)
+
+#########################
+description <- df[,4]
+
+description2 <- description %>%
+    str_remove_all("<b>|</b>|&quot;")
+
+title <- df[,1] %>%
+    str_remove_all("<b>|</b>|&quot;")
+
+link <- df[,2]
+
+
+# 가공된 데이터 적용
+description <- df[, 4]
+description2 <- description %>% str_remove_all("<b>|</b>|&quot;")
+title <- df[, 1] %>% str_remove_all("<b>|</b>|&quot;")
+link <- df[, 2]
+
+# 데이터프레임 생성
+df_combined <- data.frame(Description = description2,
+                          Title = sprintf('<a href="%s">%s</a>', link, title),
+                          stringsAsFactors = FALSE)
+
+# 테이블 출력
+df_combined <- df_combined %>%
+    kable(format="html", escape=FALSE) %>%
+    kable_styling(bootstrap_options = c("striped", "hover", "condensed")) %>%
+    column_spec(1, width = "35em")
+
+df_combined
+
+```
+
+### 검색어: 비트코인 미국
+
+```{r}
+# 1. XML로 받기
+search.word <- "비트코인 미국" %>% enc2utf8()
+query <- URLencode(search.word)
+url <- str_c(searchUrl, "?query=", query, "&display=10")
+
+res <- GET(url,
+           add_headers("X-Naver-Client-Id"=client_id,
+                       "X-Naver-Client-Secret"=client_secret))
+doc <- toString(res)
+# 뉴스 Dataframe 생성
+xmlFile <- xmlParse(doc)
+#xmlRoot(xmlFile)
+selected.nodes <- getNodeSet(xmlFile, "//item")
+
+df <- xmlToDataFrame(selected.nodes)
+
+#########################
+description <- df[,4]
+
+description2 <- description %>%
+    str_remove_all("<b>|</b>|&quot;")
+
+title <- df[,1] %>%
+    str_remove_all("<b>|</b>|&quot;")
+
+link <- df[,2]
+
+
+# 가공된 데이터 적용
+description <- df[, 4]
+description2 <- description %>% str_remove_all("<b>|</b>|&quot;")
+title <- df[, 1] %>% str_remove_all("<b>|</b>|&quot;")
+link <- df[, 2]
+
+# 데이터프레임 생성
+df_combined <- data.frame(Description = description2,
+                          Title = sprintf('<a href="%s">%s</a>', link, title),
+                          stringsAsFactors = FALSE)
+
+# 테이블 출력
+df_combined <- df_combined %>%
+    kable(format="html", escape=FALSE) %>%
+    kable_styling(bootstrap_options = c("striped", "hover", "condensed")) %>%
+    column_spec(1, width = "35em")
+
+df_combined
+
+```
+
+## Column {data-width="350"}
+
+### 비트코인 업비트
+
+```{r}
+# API 엔드포인트 URL
+url <- "https://api.binance.com/api/v3/ticker/24hr"
+
+# 쿼리 파라미터 설정 (비트코인 시장)
+query <- "symbol=BTCUSDT"
+
+# API 호출 및 데이터 가져오기
+response <- GET(url, query = query)
+data <- content(response, "text") %>%
+  jsonlite::fromJSON()
+
+# 현재 시세
+current_price <- as.numeric(data$lastPrice)
+
+# 전일 종가
+prev_closing_price <- as.numeric(data$prevClosePrice)
+
+# 종가 대비 변동율
+price_change_percent <- as.numeric(data$priceChangePercent)
+
+# 종가 대비 변동액
+price_change <- as.numeric(data$priceChange)
+
+# 종가 대비 변동율에 따라 화살표 설정
+arrow <- ifelse(price_change > 0, "▲", ifelse(price_change < 0, "▼", ""))
+
+# 결과 출력
+cat("현재 시세:", current_price, "\n")
+cat("전일 종가:", prev_closing_price, "\n")
+cat("종가 대비 변동액:", price_change, arrow, "\n")
+cat("종가 대비 변동율:", price_change_percent, "%", arrow, "\n")
+
+
+
+```
+
+
+### 비트코인 월별 트랜드드
+
+```{r, fig.width=10, fig.height=10}
+####################################################
+
+# API 엔드포인트 URL
+url <- "https://api.binance.com/api/v3/klines"
+
+# 쿼리 파라미터 설정 (비트코인 월별 데이터)
+symbol <- "BTCUSDT"
+interval <- "1M"
+limit <- 1000
+
+# API 호출 및 데이터 가져오기
+response <- GET(url, query = list(symbol = symbol, interval = interval, limit = limit))
+data <- content(response, "text") %>% fromJSON()
+
+# 데이터 프레임 변환
+df <- as.data.frame(data)
+
+# 컬럼명 설정
+colnames(df) <- c("Open Time", "Open", "High", "Low", "Close", "Volume", "Close Time", "Quote Asset Volume", "Number of Trades", "Taker Buy Base Asset Volume", "Taker Buy Quote Asset Volume", "Ignore")
+
+# 시간 형식 변환
+df$`Open Time` <- as.POSIXct(as.numeric(df$`Open Time`) / 1000, origin = "1970-01-01")
+
+# 월별 데이터로 변환
+df$Month <- format(df$`Open Time`, "%Y-%m")
+
+# 월별 시세 계산
+monthly_prices <- df %>%
+    group_by(Month) %>%
+    summarise(Open = first(Open), High = max(High), Low = min(Low), Close = last(Close))
+
+
+# Print the selected data
+selected_data <- monthly_prices %>%
+    select(Month, Close)
+
+
+recent_data <- selected_data %>%
+    filter(Month >= format(Sys.Date()-730, "%Y-%m"))
+
+
+#recent_data$Month <- ymd(recent_data$Month)  # Convert Month column to Date format
+
+
+
+ # Your code to generate the plot
+ # ...
+ 
+
+G_plotly <- ggplot(recent_data, aes(x = Month, y = as.numeric(Close))) +
+    geom_bar(stat = "identity", fill = "blue", width = 0.5) +
+    geom_text(aes(label = Close), vjust = -0.5, color = "white") +
+    labs(title = "Monthly Prices", x = "Month", y = "Price") +
+    theme(
+        axis.text.x = element_text(angle = 45, hjust = 1),
+        panel.background = element_rect(fill = "black"),
+        plot.background = element_rect(fill = "black"),
+        plot.title = element_text(color = "yellow", size = 30),
+        axis.title = element_text(color = "white", size = 20),
+        axis.text = element_text(color = "white", size = 15),
+        panel.grid = element_line(color = "white"),
+        panel.grid.major.x = element_blank()
+    )
+
+G_plotly
+
+
+```
+
+# 채권&유가&M1(일자별 트랜드)
+
+### 미국 채권 일자별 트랜드
+
+```{r}
+library(plotly)
+
+# Read the data
+spread_data <- read.csv("미국 10년채 2년채 스프레드_일별.csv")
+yield2_data <- read.csv("2년채_수익율_일별.csv")
+yield10_data <- read.csv("10년채_수익율_일별.csv")
+
+# Convert DATE column to date format
+spread_data$DATE <- as.Date(spread_data$DATE)
+yield2_data$DATE <- as.Date(yield2_data$DATE)
+yield10_data$DATE <- as.Date(yield10_data$DATE)
+
+# Subset data for the most recent 2 years
+recent_spread_data <- subset(spread_data, DATE >= max(DATE) - 365*2)
+recent_yield2_data <- subset(yield2_data, DATE >= max(DATE) - 365*2)
+recent_yield10_data <- subset(yield10_data, DATE >= max(DATE) - 365*2)
+
+# Create the bond visualization
+bond_graph <- plot_ly() %>%
+    add_trace(
+        data = recent_spread_data,
+        x = ~DATE,
+        y = ~T10Y2Y,
+        type = "scatter",
+        mode = "lines",
+        name = "Spread",
+        line = list(color = "blue")
+    ) %>%
+    add_trace(
+        data = recent_yield2_data,
+        x = ~DATE,
+        y = ~DGS2,
+        type = "scatter",
+        mode = "lines",
+        name = "2-Year Yield",
+        line = list(color = "red")
+    ) %>%
+    add_trace(
+        data = recent_yield10_data,
+        x = ~DATE,
+        y = ~DGS10,
+        type = "scatter",
+        mode = "lines",
+        name = "10-Year Yield",
+        line = list(color = "green")
+    ) %>%
+    layout(
+        xaxis = list(title = "Date", tickformat = "%Y-%m", dtick = "M1"),
+        yaxis = list(title = "Value"),
+        showlegend = TRUE,
+        plot_bgcolor = "#ffffff",
+        paper_bgcolor = "#ffffff",
+        font = list(color = "#333333")
+    )
+
+# Apply the theme
+theme <- list(
+    layout = list(
+        xaxis = list(title = list(font = list(size = 14))),
+        yaxis = list(title = list(font = list(size = 14))),
+        legend = list(font = list(size = 12))
+    )
+)
+
+# Apply the theme to the plot
+bond_graph <- bond_graph %>% config(displayModeBar = FALSE) %>% layout(theme)
+
+# Display the bond visualization
+bond_graph
+
+```
+
+### 국제 유가 & M1 일자별 트랜드
+
+```{r}
+
+library(plotly)
+
+# 데이터 읽기
+oil_data <- read.csv("국제 유가_일별.csv")
+m1_data <- read.csv("M1_일별.csv")
+
+# Convert DATE column to date format
+oil_data$DATE <- as.Date(oil_data$DATE)
+m1_data$DATE <- as.Date(m1_data$DATE)
+
+# 최근 12개월 데이터 선택
+recent_oil_data <- subset(oil_data, DATE >= max(DATE) - 365*2)
+recent_m1_data <- subset(m1_data, DATE >= max(DATE) - 365*2)
+
+# 그래프 생성 - Oil Price
+graph_oil <- plot_ly(recent_oil_data, x = ~DATE, y = ~DCOILWTICO, type = "scatter", mode = "lines", name = "Oil Price")
+
+# 레이아웃 설정 - Oil Price
+layout_oil <- list(
+    title = "International Oil Price",
+    xaxis = list(title = "Date"),
+    yaxis = list(title = "Oil Price")
+)
+
+# 그래프 생성 - M1 Money Supply
+graph_m1 <- plot_ly(recent_m1_data, x = ~DATE, y = ~WM1NS, type = "scatter", mode = "lines", name = "M1 Money Supply")
+
+# 레이아웃 설정 - M1 Money Supply
+layout_m1 <- list(
+    title = "M1 Money Supply",
+    xaxis = list(title = "Date"),
+    yaxis = list(title = "M1")
+)
+
+# 그래프 출력
+fig_oil <- graph_oil %>% layout(layout_oil)
+fig_m1 <- graph_m1 %>% layout(layout_m1)
+
+# 그래프를 서브플롯으로 나란히 출력
+subplot(fig_oil, fig_m1, nrows = 2)
+
+
+
+```
+
+### 검색어: 미국 채권 유가 M1
+
+```{r}
+# 1. XML로 받기
+searchUrl <- "https://openapi.naver.com/v1/search/news.xml"
+client_id <- "ZbRRo2N0JNo25YD8n57m"
+client_secret <- "nQE2bpCNCa"
+
+search.word <- "미국 채권 유가 M1" %>% enc2utf8()
+query <- URLencode(search.word)
+url <- str_c(searchUrl, "?query=", query, "&display=10")
+
+res <- GET(url,
+           add_headers("X-Naver-Client-Id"=client_id,
+                       "X-Naver-Client-Secret"=client_secret))
+doc <- toString(res)
+# 뉴스 Dataframe 생성
+xmlFile <- xmlParse(doc)
+#xmlRoot(xmlFile)
+selected.nodes <- getNodeSet(xmlFile, "//item")
+
+df <- xmlToDataFrame(selected.nodes)
+
+#########################
+description <- df[,4]
+
+description2 <- description %>%
+    str_remove_all("<b>|</b>|&quot;")
+
+title <- df[,1] %>%
+    str_remove_all("<b>|</b>|&quot;")
+
+link <- df[,2]
+
+
+# 가공된 데이터 적용
+description <- df[, 4]
+description2 <- description %>% str_remove_all("<b>|</b>|&quot;")
+title <- df[, 1] %>% str_remove_all("<b>|</b>|&quot;")
+link <- df[, 2]
+# 데이터프레임 생성
+df_combined <- data.frame(
+  Title = sprintf('<a href="%s">%s</a>', link, title),
+  Description = description2,
+  stringsAsFactors = FALSE
+)
+
+# Reorder the columns
+df_combined <- df_combined[, c("Title", "Description")]
+
+# 테이블 출력
+df_combined <- df_combined %>%
+  kable(format = "html", escape = FALSE) %>%
+  kable_styling(bootstrap_options = c("striped", "hover", "condensed")) %>%
+  column_spec(1, width = "35em")
+
+df_combined
+
+ 
+```
+
+# 미국 월별 경제지표
+
+### 미국 CPI, 실업율, 금수출 월별 트랜드
+
+```{r}
+URL <- "https://fred.stlouisfed.org/graph/fredgraph.csv?bgcolor=%23e1e9f0&chart_type=line&drp=0&fo=open%20sans&graph_bgcolor=%23ffffff&height=450&mode=fred&recession_bars=on&txtcolor=%23444444&ts=12&tts=12&width=718&nt=0&thu=0&trc=0&show_legend=yes&show_axis_titles=yes&show_tooltip=yes&id=CPIAUCSL&scale=left&cosd=1947-01-01&coed=2023-03-01&line_color=%234572a7&link_values=false&line_style=solid&mark_type=none&mw=3&lw=2&ost=-99999&oet=99999&mma=0&fml=a&fq=Monthly&fam=avg&fgst=lin&fgsnd=2020-02-01&line_index=1&transformation=lin&vintage_date=2023-05-07&revision_date=2023-05-07&nd=1947-01-01"
+data <- read_csv(URL)
+
+# DATE 컬럼을 날짜 형식으로 변환
+data$DATE <- as.Date(data$DATE)
+
+# 조건에 맞는 데이터 추출
+filtered_data <- data[data$DATE >= as.Date("2009-01-01"), ]
+
+write.csv(filtered_data, file = "cpi_월별.csv", row.names = FALSE)
+
+
+# 미국 실업률 데이터 2009 ~ 최신
+URL <- "https://fred.stlouisfed.org/graph/fredgraph.csv?bgcolor=%23e1e9f0&chart_type=line&drp=0&fo=open%20sans&graph_bgcolor=%23ffffff&height=450&mode=fred&recession_bars=on&txtcolor=%23444444&ts=12&tts=12&width=718&nt=0&thu=0&trc=0&show_legend=yes&show_axis_titles=yes&show_tooltip=yes&id=UNRATE&scale=left&cosd=1948-01-01&coed=2023-04-01&line_color=%234572a7&link_values=false&line_style=solid&mark_type=none&mw=3&lw=2&ost=-99999&oet=99999&mma=0&fml=a&fq=Monthly&fam=avg&fgst=lin&fgsnd=2020-02-01&line_index=1&transformation=lin&vintage_date=2023-05-07&revision_date=2023-05-07&nd=1948-01-01"
+data <- read_csv(URL)
+
+# DATE 컬럼을 날짜 형식으로 변환
+data$DATE <- as.Date(data$DATE)
+
+# 조건에 맞는 데이터 추출
+filtered_data <- data[data$DATE >= as.Date("2009-01-01"), ]
+
+
+write.csv(filtered_data, file = "실업률_월별.csv", row.names = FALSE)
+
+# 금수출 데이터 2009 ~ 최신
+URL <- "https://fred.stlouisfed.org/graph/fredgraph.csv?bgcolor=%23e1e9f0&chart_type=line&drp=0&fo=open%20sans&graph_bgcolor=%23ffffff&height=450&mode=fred&recession_bars=on&txtcolor=%23444444&ts=12&tts=12&width=718&nt=0&thu=0&trc=0&show_legend=yes&show_axis_titles=yes&show_tooltip=yes&id=IQ12260&scale=left&cosd=1984-12-01&coed=2023-03-01&line_color=%234572a7&link_values=false&line_style=solid&mark_type=none&mw=3&lw=2&ost=-99999&oet=99999&mma=0&fml=a&fq=Monthly&fam=avg&fgst=lin&fgsnd=2020-02-01&line_index=1&transformation=lin&vintage_date=2023-05-07&revision_date=2023-05-07&nd=1984-12-01"
+data <- read_csv(URL)
+
+# DATE 컬럼을 날짜 형식으로 변환
+data$DATE <- as.Date(data$DATE)
+
+# 조건에 맞는 데이터 추출
+filtered_data <- data[data$DATE >= as.Date("2009-01-01"), ]
+
+
+write.csv(filtered_data, file = "금수출_월별.csv", row.names = FALSE)
+
+
+# Read the CPI data
+cpi_data <- read.csv("cpi_월별.csv")
+# Read the unemployment rate data
+unemployment_data <- read.csv("실업률_월별.csv")
+# Read the gold exports data
+gold_exports_data <- read.csv("금수출_월별.csv")
+
+# Convert DATE column to date format
+cpi_data$DATE <- as.Date(cpi_data$DATE)
+unemployment_data$DATE <- as.Date(unemployment_data$DATE)
+gold_exports_data$DATE <- as.Date(gold_exports_data$DATE)
+
+# Create a custom theme
+custom_theme <- theme_minimal() +
+    theme(
+        plot.title = element_text(size = 16, face = "bold"),
+        axis.title = element_text(size = 12),
+        axis.text = element_text(size = 10),
+        legend.position = "bottom"
+    )
+
+# Create CPI graph
+cpi_graph <- ggplot(data = cpi_data, aes(x = DATE, y = CPIAUCSL)) +
+    geom_line(color = "blue", size = 1.2) +
+    labs(title = "Consumer Price Index (CPI)",
+         x = "Date",
+         y = "CPI") +
+    scale_x_date(date_breaks = "1 year", labels = date_format("%Y")) +
+    scale_y_continuous(labels = comma) +
+    custom_theme
+
+# Create unemployment rate graph
+unemployment_graph <- ggplot(data = unemployment_data, aes(x = DATE, y = UNRATE)) +
+    geom_line(color = "red", size = 1.2) +
+    labs(title = "Unemployment Rate",
+         x = "Date",
+         y = "Unemployment Rate") +
+    scale_x_date(date_breaks = "1 year", labels = date_format("%Y")) +
+    scale_y_continuous(labels = percent) +
+    custom_theme
+
+# Create gold exports graph
+gold_exports_graph <- ggplot(data = gold_exports_data, aes(x = DATE, y = IQ12260)) +
+    geom_line(color = "darkgreen", size = 1.2) +
+    labs(title = "Gold Exports",
+         x = "Date",
+         y = "Gold Exports") +
+    scale_x_date(date_breaks = "1 year", labels = date_format("%Y")) +
+    scale_y_continuous(labels = comma) +
+    custom_theme
+
+
+# Arrange the graphs
+library(gridExtra)
+combined_graph <- grid.arrange(cpi_graph, unemployment_graph, gold_exports_graph, ncol = 1)
+```
+
+
+### 검색어: 미국 CPI, 실업율, 금수출
+
+```{r}
+# 1. XML로 받기
+searchUrl <- "https://openapi.naver.com/v1/search/news.xml"
+client_id <- "ZbRRo2N0JNo25YD8n57m"
+client_secret <- "nQE2bpCNCa"
+
+search.word <- "미국 CPI" %>% enc2utf8()
+query <- URLencode(search.word)
+url <- str_c(searchUrl, "?query=", query, "&display=10")
+
+res <- GET(url,
+           add_headers("X-Naver-Client-Id"=client_id,
+                       "X-Naver-Client-Secret"=client_secret))
+doc <- toString(res)
+# 뉴스 Dataframe 생성
+xmlFile <- xmlParse(doc)
+#xmlRoot(xmlFile)
+selected.nodes <- getNodeSet(xmlFile, "//item")
+
+df <- xmlToDataFrame(selected.nodes)
+
+#########################
+description <- df[,4]
+
+description2 <- description %>%
+    str_remove_all("<b>|</b>|&quot;")
+
+title <- df[,1] %>%
+    str_remove_all("<b>|</b>|&quot;")
+
+link <- df[,2]
+
+
+# 가공된 데이터 적용
+description <- df[, 4]
+description2 <- description %>% str_remove_all("<b>|</b>|&quot;")
+title <- df[, 1] %>% str_remove_all("<b>|</b>|&quot;")
+link <- df[, 2]
+# 데이터프레임 생성
+df_combined <- data.frame(
+  Title = sprintf('<a href="%s">%s</a>', link, title),
+  Description = description2,
+  stringsAsFactors = FALSE
+)
+
+# Reorder the columns
+df_combined <- df_combined[, c("Title", "Description")]
+
+# 테이블 출력
+df_combined <- df_combined %>%
+  kable(format = "html", escape = FALSE) %>%
+  kable_styling(bootstrap_options = c("striped", "hover", "condensed")) %>%
+  column_spec(1, width = "35em")
+
+df_combined
+
+
+```
+
