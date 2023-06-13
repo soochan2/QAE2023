@@ -1,27 +1,25 @@
 ---
-title: "Themed dashboard"
+title: "비트코인 동향 24"
 output: 
   flexdashboard::flex_dashboard:
-    theme:
-      bg: "#101010"
-      fg: "#FDF7F7" 
-      primary: "#ED79F9"
-      base_font:
-        google: Prompt
-      code_font:
-        google: JetBrains Mono
-    orientation: columns
-    vertical_layout: fill
+    theme: cerulean
+    css: |
+      a {
+        color: #000080; /* Dark blue color */
+        font-weight: bold; /* Bold font weight */
+      }
 ---
 
 ```{r setup, include=FALSE}
 #Install thematic and un-comment for themed static plots (i.e., ggplot2)
 #thematic::thematic_rmd()
+library(DT)
 library(flexdashboard)
 library(jsonlite)
+library(rvest)
+library(stringr)
 library(dplyr)
 library(coronavirus)
-library(dplyr)
 library(readr)
 library(stringr)
 library(knitr)
@@ -31,18 +29,25 @@ library(httr)
 library(XML)
 library(ggplot2)
 library(ggthemes)
+library(ggplot2)
+library(gganimate)
+library(lubridate)
+library(transformr)
 library(scales)
-
+library(readxl)
+library(leaflet)
+library(wordcloud)
+library(RColorBrewer)
 
 # Install thematic and un-comment for themed static plots (i.e., ggplot2)
 # thematic::thematic_rmd()
 ```
 
-# 국내내 비트코인 트랜드24(업비트트)
+# **국내 비트코인24(업비트)**
 
-## Column {.tabset data-width="500"}
+## **Column** {.tabset data-width="500"}
 
-### 검색어: 비트코인
+### **검색어: 비트코인**
 
 ```{r}
 # 1. XML로 받기
@@ -99,7 +104,7 @@ df_combined
 
 ```
 
-### 검색어: 코인 상승
+### **검색어: 코인 상승**
 
 ```{r}
 # 1. XML로 받기
@@ -151,7 +156,7 @@ df_combined
 
 ```
 
-### 검색어: 코인 하락
+### **검색어: 코인 하락**
 
 ```{r}
 # 1. XML로 받기
@@ -203,9 +208,9 @@ df_combined
 
 ```
 
-## Column {data-width="350"}
+## **Column** {data-width="350"}
 
-### 비트코인 업비트
+### **비트코인 업비트**
 
 ```{r}
 res1 <- GET(url = 'https://api.upbit.com/v1/market/all')
@@ -253,7 +258,7 @@ cat("전일 종가의 변동율: ", arrow, format(signed_change_rate*100, big.ma
 
 ```
 
-### 비트코인 시간대별 트랜드드
+### **비트코인 시간대별 트랜드**
 
 ```{r, fig.width=13, fig.height=6}
 
@@ -274,7 +279,7 @@ a+ theme_economist()
 
 ```
 
-### 비트코인 월별 트랜드드
+### **비트코인 월별 트랜드**
 
 ```{r, fig.width=13, fig.height=6}
 ####################################################
@@ -303,11 +308,11 @@ G + theme_economist()
 
 ```
 
-# 국외 비트코인 트랜드24(바이낸스)
+# **국외 비트코인24(바이낸스)**
 
-## Column {.tabset data-width="500"}
+## **Column** {.tabset data-width="500"}
 
-### 검색어: Global Bitcoin adoption
+### **검색어: Global Bitcoin adoption**
 
 ```{r}
 # 1. XML로 받기
@@ -364,7 +369,7 @@ df_combined
 
 ```
 
-### 검색어: Bitcoin investment trends
+### **검색어: Bitcoin investment trends**
 
 ```{r}
 # 1. XML로 받기
@@ -416,7 +421,7 @@ df_combined
 
 ```
 
-### 검색어: 비트코인 미국
+### **검색어: 비트코인 미국**
 
 ```{r}
 # 1. XML로 받기
@@ -468,9 +473,9 @@ df_combined
 
 ```
 
-## Column {data-width="350"}
+## **Column** {data-width="350"}
 
-### 비트코인 업비트
+### **비트코인 바이낸스**
 
 ```{r}
 # API 엔드포인트 URL
@@ -509,8 +514,7 @@ cat("종가 대비 변동율:", price_change_percent, "%", arrow, "\n")
 
 ```
 
-
-### 비트코인 월별 트랜드드
+### **비트코인 월별 트랜드**
 
 ```{r, fig.width=10, fig.height=10}
 ####################################################
@@ -582,9 +586,9 @@ G_plotly
 
 ```
 
-# 채권&유가&M1(일자별 트랜드)
+# **미귝 채권&유가&M1(일별 트랜드)**
 
-### 미국 채권 일자별 트랜드
+### **미국 채권 일자별 트랜드**
 
 ```{r}
 library(plotly)
@@ -659,7 +663,7 @@ bond_graph
 
 ```
 
-### 국제 유가 & M1 일자별 트랜드
+### **국제 유가 & M1 일자별 트랜드**
 
 ```{r}
 
@@ -708,7 +712,7 @@ subplot(fig_oil, fig_m1, nrows = 2)
 
 ```
 
-### 검색어: 미국 채권 유가 M1
+### **검색어: 미국 채권 유가 M1**
 
 ```{r}
 # 1. XML로 받기
@@ -769,9 +773,9 @@ df_combined
  
 ```
 
-# 미국 월별 경제지표
+# **미국 월별 경제지표**
 
-### 미국 CPI, 실업율, 금수출 월별 트랜드
+### **미국 CPI, 실업율, 금수출 월별 트랜드** {data-width="650"}
 
 ```{r}
 URL <- "https://fred.stlouisfed.org/graph/fredgraph.csv?bgcolor=%23e1e9f0&chart_type=line&drp=0&fo=open%20sans&graph_bgcolor=%23ffffff&height=450&mode=fred&recession_bars=on&txtcolor=%23444444&ts=12&tts=12&width=718&nt=0&thu=0&trc=0&show_legend=yes&show_axis_titles=yes&show_tooltip=yes&id=CPIAUCSL&scale=left&cosd=1947-01-01&coed=2023-03-01&line_color=%234572a7&link_values=false&line_style=solid&mark_type=none&mw=3&lw=2&ost=-99999&oet=99999&mma=0&fml=a&fq=Monthly&fam=avg&fgst=lin&fgsnd=2020-02-01&line_index=1&transformation=lin&vintage_date=2023-05-07&revision_date=2023-05-07&nd=1947-01-01"
@@ -825,53 +829,39 @@ cpi_data$DATE <- as.Date(cpi_data$DATE)
 unemployment_data$DATE <- as.Date(unemployment_data$DATE)
 gold_exports_data$DATE <- as.Date(gold_exports_data$DATE)
 
-# Create a custom theme
-custom_theme <- theme_minimal() +
-    theme(
-        plot.title = element_text(size = 16, face = "bold"),
-        axis.title = element_text(size = 12),
-        axis.text = element_text(size = 10),
-        legend.position = "bottom"
-    )
+# Create CPI plotly graph with title
+cpi_plot <- plot_ly(data = cpi_data, x = ~DATE, y = ~CPIAUCSL, type = "scatter", mode = "lines", line = list(color = "blue", width = 1.4)) %>%
+  layout(title = list(text = "Consumer Price Index (CPI)", x = 1.5),
+         xaxis = list(title = "Date"),
+         yaxis = list(title = "CPI"),
+         showlegend = FALSE)
 
-# Create CPI graph
-cpi_graph <- ggplot(data = cpi_data, aes(x = DATE, y = CPIAUCSL)) +
-    geom_line(color = "blue", size = 1.2) +
-    labs(title = "Consumer Price Index (CPI)",
-         x = "Date",
-         y = "CPI") +
-    scale_x_date(date_breaks = "1 year", labels = date_format("%Y")) +
-    scale_y_continuous(labels = comma) +
-    custom_theme
+# Create unemployment rate plotly graph with title
+unemployment_plot <- plot_ly(data = unemployment_data, x = ~DATE, y = ~UNRATE, type = "scatter", mode = "lines", line = list(color = "red", width = 1.4)) %>%
+  layout(title = list(text = "Unemployment Rate", x = 1.5),
+         xaxis = list(title = "Date"),
+         yaxis = list(title = "Unemployment Rate"),
+         showlegend = FALSE)
 
-# Create unemployment rate graph
-unemployment_graph <- ggplot(data = unemployment_data, aes(x = DATE, y = UNRATE)) +
-    geom_line(color = "red", size = 1.2) +
-    labs(title = "Unemployment Rate",
-         x = "Date",
-         y = "Unemployment Rate") +
-    scale_x_date(date_breaks = "1 year", labels = date_format("%Y")) +
-    scale_y_continuous(labels = percent) +
-    custom_theme
+# Create gold exports plotly graph with title
+gold_exports_plot <- plot_ly(data = gold_exports_data, x = ~DATE, y = ~IQ12260, type = "scatter", mode = "lines", line = list(color = "darkgreen", width = 1.4)) %>%
+  layout(title = list(text = "미국 CPI  &  Unemployment Rate  &  Gold Exports", x = 1.5, font = list(size = 35)),
+         xaxis = list(title = "Date"),
+         yaxis = list(title = "미국 CPI,  &  Unemployment Rate  &  Gold Exports"),
+         showlegend = FALSE)
 
-# Create gold exports graph
-gold_exports_graph <- ggplot(data = gold_exports_data, aes(x = DATE, y = IQ12260)) +
-    geom_line(color = "darkgreen", size = 1.2) +
-    labs(title = "Gold Exports",
-         x = "Date",
-         y = "Gold Exports") +
-    scale_x_date(date_breaks = "1 year", labels = date_format("%Y")) +
-    scale_y_continuous(labels = comma) +
-    custom_theme
+# Combine the graphs vertically
+combined_plot <- subplot(cpi_plot, unemployment_plot, gold_exports_plot, nrows = 1)
 
+combined_plot <- layout(combined_plot)
 
-# Arrange the graphs
-library(gridExtra)
-combined_graph <- grid.arrange(cpi_graph, unemployment_graph, gold_exports_graph, ncol = 1)
+combined_plot <- layout(combined_plot, margin = list(l = 90, r = 90, t = 90, b = 90))
+
+# Display the combined plot
+combined_plot
 ```
 
-
-### 검색어: 미국 CPI, 실업율, 금수출
+### **검색어: 미국 CPI, 실업율, 금수출** {data-width="650"}
 
 ```{r}
 # 1. XML로 받기
@@ -911,6 +901,7 @@ description <- df[, 4]
 description2 <- description %>% str_remove_all("<b>|</b>|&quot;")
 title <- df[, 1] %>% str_remove_all("<b>|</b>|&quot;")
 link <- df[, 2]
+
 # 데이터프레임 생성
 df_combined <- data.frame(
   Title = sprintf('<a href="%s">%s</a>', link, title),
@@ -932,3 +923,305 @@ df_combined
 
 ```
 
+# **한국 경제지표**
+
+## **Row**
+
+### **한국은행 기준 국내 명목 GDP**
+
+```{r}
+
+d <- Sys.Date() - 1
+date <- format(d, "%Y%m%d")
+month <- format(d, "%Y%m")
+year <- format(d, "%Y")
+
+end_date <- paste0(month, "/")
+#한국은행
+
+###################  gdp
+api_key <- "1ODEWEJ6C0GR31YD2FXD/"
+url <- paste0("https://ecos.bok.or.kr/api/StatisticSearch/1ODEWEJ6C0GR31YD2FXD/JSON/kr/1/100000/200Y001/A/2009/",year ,"/10101/?/?/?")
+raw.data <- readLines(url, warn = "F", encoding = "UTF-8")
+dat <- fromJSON(raw.data)
+
+# Extract relevant data
+time <- dat$StatisticSearch$row$TIME
+data_value <- dat$StatisticSearch$row$DATA_VALUE
+
+# Create dataframe
+df <- data.frame(Time = time, Data_Value = data_value)
+#, decreasing = TRUE
+df <- df[order(df$Time), ]
+
+df$Data_Value <- as.numeric(df$Data_Value)
+df$Difference <- c(NA, diff(df$Data_Value))
+
+
+
+# Create the bar plot
+bar_plot <- ggplot(df) +
+    aes(x = Time, y = Data_Value) +
+    geom_col(fill = "#112446") +
+    labs(x = "Time", y = "Data Value", title = "한국 GDP") +
+    theme_minimal() +
+    theme(
+        plot.title = element_text(size = 16, face = "bold"),
+        axis.title = element_text(size = 12),
+        axis.text = element_text(size = 10),
+        panel.grid.major = element_blank(),
+        panel.grid.minor = element_blank(),
+        panel.background = element_rect(fill = "white"),
+        panel.border = element_blank()
+    )
+
+# Create the line plot with the secondary axis
+line_plot <- ggplot(df) +
+    aes(x = Time, y = Difference) +
+    geom_line(color = "#FF5733", size = 1, group = 1) +
+    geom_point(color = "#FF5733", size = 3) +
+    labs(y = "Difference", title = "Difference from Previous Value") +
+    theme_minimal() +
+    theme(
+        plot.title = element_text(size = 16, face = "bold"),
+        axis.title = element_text(size = 12),
+        axis.text = element_text(size = 10),
+        panel.grid.major = element_blank(),
+        panel.grid.minor = element_blank(),
+        panel.background = element_rect(fill = "white"),
+        panel.border = element_blank()
+    ) +
+    scale_y_continuous(
+        sec.axis = sec_axis(
+            ~.,
+            name = "Difference",
+            breaks = pretty(df$Difference),
+            labels = scales::comma
+        )
+    )
+
+
+plot_combined <- cowplot::plot_grid(bar_plot, line_plot, align = "v", ncol = 1)
+
+# Display the combined plot with larger size
+plot_combined
+```
+
+------------------------------------------------------------------------
+
+### **한국 금리**
+
+```{r}
+
+###################  금리
+api_key <- "1ODEWEJ6C0GR31YD2FXD/"
+url <- paste0("https://ecos.bok.or.kr/api/StatisticSearch/1ODEWEJ6C0GR31YD2FXD/JSON/kr/1/10000/722Y001/M/200901/",month ,"/0101000/?/?/?")
+raw.data <- readLines(url, warn = "F", encoding = "UTF-8")
+dat <- fromJSON(raw.data)
+
+# Extract relevant data
+time <- dat$StatisticSearch$row$TIME
+data_value <- dat$StatisticSearch$row$DATA_VALUE
+
+# Create dataframe
+df <- data.frame(Time = time, Data_Value = data_value)
+
+
+df$Time <- as.Date(paste0(substr(df$Time, 1, 4), "-", substr(df$Time, 5, 6), "-01"))
+
+a<- ggplot(df, aes(x = Time, y = Data_Value)) +
+    geom_point(color = "#112446", size = 1.5) +
+    labs(x = "", y = "") +
+    theme_minimal() +
+    theme(
+        plot.title = element_text(size = 16, face = "bold"),
+        axis.title = element_text(size = 12),
+        axis.text = element_text(size = 10),
+        panel.grid.major = element_blank(),
+        panel.grid.minor = element_blank(),
+        panel.background = element_rect(fill = "white"),
+        panel.border = element_blank()
+    )
+
+# Convert ggplot to plotly
+plotly_obj <- ggplotly(a)
+
+# Show the plotly object
+
+datatable_df <- DT::datatable(df, options = list(pageLength = 5))
+datatable_df 
+```
+
+### **한국 금리 그래프**
+
+```{r}
+plotly_obj 
+```
+
+## **Row**
+
+### **검색어: 한국 경제 금리**
+
+```{r}
+# 1. XML로 받기
+searchUrl <- "https://openapi.naver.com/v1/search/news.xml"
+client_id <- "ZbRRo2N0JNo25YD8n57m"
+client_secret <- "nQE2bpCNCa"
+
+search.word <- "한국 경제 금리" %>% enc2utf8()
+query <- URLencode(search.word)
+url <- str_c(searchUrl, "?query=", query, "&display=30")
+
+res <- GET(url,
+           add_headers("X-Naver-Client-Id"=client_id,
+                       "X-Naver-Client-Secret"=client_secret))
+doc <- toString(res)
+# 뉴스 Dataframe 생성
+xmlFile <- xmlParse(doc)
+#xmlRoot(xmlFile)
+selected.nodes <- getNodeSet(xmlFile, "//item")
+
+df <- xmlToDataFrame(selected.nodes)
+
+#########################
+description <- df[,4]
+
+description2 <- description %>%
+    str_remove_all("<b>|</b>|&quot;")
+
+title <- df[,1] %>%
+    str_remove_all("<b>|</b>|&quot;")
+
+link <- df[,2]
+
+
+# 가공된 데이터 적용
+description <- df[, 4]
+description2 <- description %>% str_remove_all("<b>|</b>|&quot;")
+title <- df[, 1] %>% str_remove_all("<b>|</b>|&quot;")
+link <- df[, 2]
+# 데이터프레임 생성
+df_combined <- data.frame(
+  Title = sprintf('<a href="%s">%s</a>', link, title),
+  stringsAsFactors = FALSE
+)
+
+# Reorder the columns
+df_combined <- df_combined[, "Title", drop = FALSE]
+
+# 테이블 출력
+df_combined <- df_combined %>%
+  kable(format = "html", escape = FALSE) %>%
+  kable_styling(bootstrap_options = c("striped", "hover", "condensed")) %>%
+  column_spec(1, width = "35em")
+
+df_combined
+
+
+
+```
+
+## **Column** {.tabset}
+
+### **CPI**
+
+```{r}
+
+d <- Sys.Date() - 1
+date <- format(d, "%Y%m%d")
+month <- format(d, "%Y%m")
+year <- format(d, "%Y")
+
+api_key <- "1ODEWEJ6C0GR31YD2FXD/"
+file_type <- "json/"
+lang_type <- "kr/"
+start_no <- "1/"
+end_no <- "1000/"
+stat_code <- "901Y009/" # 소비자 물가지수 (A,M,Q)
+cycle_type <- "M/"
+start_date <- "200901/"
+end_date <- paste0(month, "/")
+item_no <- "0"
+
+url <- paste0("https://ecos.bok.or.kr/api/StatisticSearch/",
+              api_key, file_type, lang_type, start_no, end_no,
+              stat_code, cycle_type, start_date, end_date, item_no)
+raw.data <- readLines(url, warn = "F", encoding = "UTF-8")
+dat <- fromJSON(raw.data)
+
+# Extract relevant data
+time <- dat$StatisticSearch$row$TIME
+data_value <- dat$StatisticSearch$row$DATA_VALUE
+
+
+# Create dataframe
+df <- data.frame(Time = time, Data_Value = data_value)
+
+df$Data_Value <- as.numeric(as.character(df$Data_Value))
+df$Data_Value <- round(df$Data_Value, 2)
+
+# Extract year and month from Time column
+df$Year <- substr(df$Time, 1, 4)
+df$Month <- substr(df$Time, 5, 6)
+
+# Convert Year and Month columns to date format
+df$Date <- ymd(paste(df$Year, df$Month, "01"))
+
+# Create a line plot with animated months
+p <- ggplot(df, aes(x = Date, y = Data_Value, group = 1)) +
+    geom_line(color = "#3366cc", size = 3.5) +
+    labs(title = "소비자 물가지수", x = "Date", y = "Data Value") +
+    theme_minimal() +
+    theme(plot.title = element_text(size = 26, face = "bold"),
+          axis.title.x = element_text(size = 22),
+          axis.title.y = element_text(size = 22),
+          axis.text.x = element_text(size = 20),
+          axis.text.y = element_text(size = 20),
+          panel.grid.major = element_blank(),
+          panel.grid.minor = element_blank(),
+          panel.border = element_blank(),
+          legend.position = "none")
+
+
+
+rd_anim <- p +
+  transition_reveal(Date) +
+  labs(
+    subtitle = "Date: {frame_along}"
+  ) +
+  theme(plot.subtitle = element_text(size = 36))
+
+animate(rd_anim,
+        height = 980,
+        width = 700,
+        duration = 5, 
+        end_pause = 15)
+
+
+
+```
+
+### **CPI Summary**
+
+```{r}
+
+
+# Filter data for the past year
+past_year <- df %>%
+    mutate(Month = paste(Year, Month, sep = "-")) %>%
+    filter(Date >= (Sys.Date() - years(15)))
+
+# Group filtered data by month and calculate summary statistics
+monthly_summary <- past_year %>%
+    group_by(Year) %>%
+    summarise(
+        Mean = round(mean(Data_Value), 2),
+        Min = round(min(Data_Value), 2),
+        Max = round(max(Data_Value), 2)
+    )
+library(kableExtra)
+# Print the formatted monthly summary table
+kable(monthly_summary, align = c("l", "c", "c", "c"), caption = "Yearly Summary") %>%
+    kable_styling(bootstrap_options = "striped", full_width = FALSE)
+
+```
